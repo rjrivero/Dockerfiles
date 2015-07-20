@@ -56,16 +56,14 @@ frontend http-in
 
 {{range $service := ls "/services"}}
 
-{{$key := printf "/services/%s/users" $service}}  {{if exists $key}}
+{{range $user := ls (printf "/services/%s/users" $service)}}
 userlist usersFor_{{$service}}
-  {{range $user := ls (printf "/services/%s/users" $service)}}
   user {{$user}} insecure-password {{printf "/services/%s/users/%s" $service $user | getv}}
-  {{end}}
 {{end}}
 
 backend {{$service}}
 
-    {{$key := printf "/services/%s/users" $service}}  {{if exists $key}}
+    {{$key := ls (printf "/services/%s/users" $service)}}  {{if $key}}
     acl authOK_{{$service}} http_auth(usersFor_{{$service}})
     http-request auth realm {{$service}} if !authOK_{{$service}}
     {{end}}
