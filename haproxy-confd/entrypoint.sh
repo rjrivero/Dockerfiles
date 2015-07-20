@@ -8,12 +8,12 @@ fi
 
 # Escape a string for a sed replace pattern. See:
 # http://stackoverflow.com/questions/407523/escape-a-string-for-a-sed-replace-pattern
-STATS_USER=`echo "${STATS_USER:-admin}" | sed -e 's/[\/&]/\\&/g'`
-STATS_PASSWORD=`echo "${STATS_PASSWORD:-Changeme!}" | sed -e 's/[\/&]/\\&/g'`
-STATS_PORT=`echo "${STATS_PORT:-5000}"  | sed -e 's/[\/&]/\\&/g'`
+# USER and PASSWORD deprecated, use the /users key in the service definition
+#STATS_USER=`echo "${STATS_USER:-admin}" | sed -e 's/[\/&]/\\&/g'`
+#STATS_PASSWORD=`echo "${STATS_PASSWORD:-Changeme!}" | sed -e 's/[\/&]/\\&/g'`
 ETCD_KEY=`echo "${ETCD_KEY:-haproxy-confd}"  | sed -e 's/[\/&]/\\&/g'`
+STATS_PORT=`echo "${STATS_PORT:-5000}"  | sed -e 's/[\/&]/\\&/g'`
 LOG_HOST=`echo "${LOG_HOST:-127.0.0.1}"  | sed -e 's/[\/&]/\\&/g'`
-
 
 set -eo pipefail
 
@@ -31,7 +31,8 @@ done
 
 # Move confd files from /etc/confd to /usr/local/etc/confd
 for i in /etc/confd/templates/*.tmpl; do
-  sed "s/\$STATS_USER/$STATS_USER/g;s/\$STATS_PASSWORD/$STATS_PASSWORD/g;s/\$STATS_PORT/$STATS_PORT/g;s/\$LOG_HOST/$LOG_HOST/g;" \
+  #sed "s/\$STATS_USER/$STATS_USER/g;s/\$STATS_PASSWORD/$STATS_PASSWORD/g;s/\$STATS_PORT/$STATS_PORT/g;s/\$LOG_HOST/$LOG_HOST/g;" \
+  sed "s/\$STATS_PORT/$STATS_PORT/g;s/\$LOG_HOST/$LOG_HOST/g;" \
       "$i" > "/usr/local/$i"
 done
 

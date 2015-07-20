@@ -9,8 +9,9 @@ ENV ETCD_NODE 172.17.42.1:4001
 ENV ETCD_PREFIX haproxy-confd
 
 # Authentication credentials and port for stats binding
-ENV STATS_USER admin
-ENV STATS_PASSWORD Changeme!
+# Deprecated, use the /users key in the service definition
+#ENV STATS_USER admin
+#ENV STATS_PASSWORD Changeme!
 ENV STATS_PORT 5000
 
 # Log collector address:port

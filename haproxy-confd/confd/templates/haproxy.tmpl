@@ -91,13 +91,13 @@ listen MyStats
     bind 0.0.0.0:$STATS_PORT
     stats enable
     stats uri /
-    stats refresh 5s
+    stats refresh 10s
     stats show-node
     stats show-legends
     
     # if authentication is wanted
-    acl auth_ok http_auth(stats-auth)
-    http-request auth unless auth_ok
+    #acl auth_ok http_auth(stats-auth)
+    #http-request auth unless auth_ok
  
-userlist stats-auth
-    user $STATS_USER insecure-password $STATS_PASSWORD
+#userlist stats-auth
+#    user $STATS_USER insecure-password $STATS_PASSWORD
