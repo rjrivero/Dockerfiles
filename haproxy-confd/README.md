@@ -38,11 +38,12 @@ The haproxy server is configured by default to enable the statistics page. The f
 Configuring services
 --------------------
 
-Services are configured under the etcd prefix specified by the environment variable ECTD_PREFIX (*haproxy-confd* by default). Services accept the following keys:
+Services are configured under the etcd prefix specified by the environment variable **ECTD_PREFIX** (*haproxy-confd* by default). Services accept the following keys:
 
-  - **/$ETCD_PREFIX/services/$SERVICE_NAME/domain**: Host / domain name of the service (may include the port, e.g.: **my.domain.com:8080**)
-  - **/$ETCD_PREFIX/services/$SERVICE_NAME/url_reg**: Regular expression matching the path e.g.: **/myapp**)
-  - **/$ETCD_PREFIX/services/$SERVICE_NAME/health**: URL to be used for checking health of the backend servers, e.g.: **/ping**)
-  - **/$ETCD_PREFIX/services/$SERVICE_NAME/upstreams/$SERVER**: Upstream servers' URL, in the form <HOST>:<PORT>
-  - **/$ETCD_PREFIX/services/$SERVICE_NAME/users/$USERNAME**: Password for each user. If the "users" key does not exist, the backend is not password protected.
+  - /services/*$SERVICE_NAME*/domain: Host / domain name of the service (may include the port, e.g.: **my.domain.com**)
+    - The match is performed against the **beginning**, to avoid problems when the port number is explicitly specified (as in *www.somedomain.com:8080*). As a side effect, you can match on subdomain (e.g. **stats.**)
+  - /services/*$SERVICE_NAME*/url_reg: Regular expression matching the path e.g.: **/myapp**)
+  - /services/*$SERVICE_NAME*/health: URL to be used for checking health of the backend servers, e.g.: **/ping**)
+  - /services/*$SERVICE_NAME*/upstreams/*$SERVER*: Upstream servers' URL, in the form <HOST>:<PORT>
+  - /services/*$SERVICE_NAME*/users/*$USERNAME*: Password for each user. If the "users" key does not exist, the backend is not password protected.
 
