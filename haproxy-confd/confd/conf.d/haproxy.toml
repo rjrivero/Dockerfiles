@@ -1,0 +1,14 @@
+[template]
+prefix = "$ETCD_PREFIX"
+keys   = [
+  "services",
+  "tcp-services"
+]
+
+owner = "haproxy"
+mode  = "0644"
+src   = "haproxy.tmpl"
+dest  = "/usr/local/etc/haproxy/haproxy.cfg"
+
+check_cmd  = "/usr/sbin/haproxy -c -f {{ .src }}"
+reload_cmd = "/usr/sbin/haproxy -f /usr/local/etc/haproxy/haproxy.cfg -p /home/haproxy/haproxy.pid -D -sf $(cat /home/haproxy/haproxy.pid)"
