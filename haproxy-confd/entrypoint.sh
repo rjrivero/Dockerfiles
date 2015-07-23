@@ -8,9 +8,6 @@ fi
 
 # Escape a string for a sed replace pattern. See:
 # http://stackoverflow.com/questions/407523/escape-a-string-for-a-sed-replace-pattern
-# USER and PASSWORD deprecated, use the /users key in the service definition
-#STATS_USER=`echo "${STATS_USER:-admin}" | sed -e 's/[\/&]/\\&/g'`
-#STATS_PASSWORD=`echo "${STATS_PASSWORD:-Changeme!}" | sed -e 's/[\/&]/\\&/g'`
 ETCD_KEY=`echo "${ETCD_KEY:-haproxy-confd}"  | sed -e 's/[\/&]/\\&/g'`
 STATS_PORT=`echo "${STATS_PORT:-5000}"  | sed -e 's/[\/&]/\\&/g'`
 LOG_HOST=`echo "${LOG_HOST:-127.0.0.1}"  | sed -e 's/[\/&]/\\&/g'`
@@ -23,6 +20,17 @@ mkdir -p /usr/local/etc/confd/templates
 mkdir -p /usr/local/etc/confd/conf.d
 export IFS='
 '
+
+# if PEM file does not exist, create self signed certificate
+if ! [ -f "/opt/haproxy/pem" ]; then
+  openssl req -new -nodes -x509 \
+         -subj "/C=ES/ST=Madrid/L=Madrid/O=IT/CN=`hostname`" \
+         -days 3650 \
+         -keyout /opt/haproxy/key \
+         -out /opt/haproxy/crt \
+         -extensions v3_ca
+  cat /opt/haproxy/crt /opt/haproxy/key > "/opt/haproxy/pem"
+fi
 
 # Move confd files from /etc/confd to /usr/local/etc/confd
 for i in /etc/confd/*.toml; do

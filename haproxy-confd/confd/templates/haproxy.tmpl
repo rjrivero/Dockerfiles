@@ -7,6 +7,7 @@ global
     maxconn 128000
     user haproxy
     group haproxy
+    tune.ssl.default-dh-param 2048
 
 defaults
     log global
@@ -30,10 +31,22 @@ defaults
 #    errorfile 503 /usr/local/etc/haproxy/errors/503.http
 #    errorfile 504 /usr/local/etc/haproxy/errors/504.http
 
+# Force HTTP to HTTPS
+# -----------------------------------------
 frontend http-in
+    bind *:8080
+    reqadd X-Forwarded-Proto:\ http
+    default_backend http-backend
+
+backend http-backend
+    redirect scheme https if !{ ssl_fc }
+# -----------------------------------------
+
+frontend https-in
 
     capture request header Host len 48
-    bind *:8080
+    bind *:8443 ssl crt /opt/haproxy/pem no-sslv3 no-tlsv10 no-tlsv11
+    reqadd X-Forwarded-Proto:\ https
   
     {{range $service := ls "/services"}}
     {{$key := printf "/services/%s/domain" $service}}  {{if exists $key}}
@@ -93,9 +106,9 @@ listen MyStats
     stats show-node
     stats show-legends
     
-    # if authentication is wanted
-    #acl auth_ok http_auth(stats-auth)
-    #http-request auth unless auth_ok
+#    # if authentication is wanted
+#    acl auth_ok http_auth(stats-auth)
+#    http-request auth unless auth_ok
  
 #userlist stats-auth
 #    user $STATS_USER insecure-password $STATS_PASSWORD

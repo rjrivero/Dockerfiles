@@ -18,7 +18,10 @@ To run:
 docker run --rm -e ETCD_NODE=http://<HOST>:<PORT> -P --name proxy haproxy-confd
 ```
 
-The container exposes **port 8080** by default.
+The container exposes  the **HTTPS port, 8443** by default. The SSL certificate
+can be auto-generated at first container run, or can be provided as a volume
+(-v /path/to/pem:**/opt/haproxy/pem**). The file must be readable by user
+haproxy (currently uid:gid = **100:1000**)
 
 Environment variables
 ---------------------
@@ -31,8 +34,6 @@ The container accepts the following environment variables:
 
 The haproxy server is configured by default to enable the statistics page. The following environment variables customize the behaviour oif the stats service:
 
-  - STATS_USER: Username to restrict access to the stats service.
-  - STATS_PASSWORD: Password for the stats user
   - STATS_PORT: Port number for the stats service (by default, 5000).
 
 Configuring services
